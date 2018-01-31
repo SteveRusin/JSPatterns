@@ -1,77 +1,57 @@
-class Participant {
-    constructor(name) {
-        this.name = name;
-        this.chatroom = null;
+const someItems = ['first', 'second', 'thirds', 'fourth', 'fifth'];
+
+function uppercase(item){
+    return item.toUpperCase();
+ }
+
+class Iterator {
+    constructor(items) {
+        this.index = 0;
+        this.items = items;
     }
 
-    sendMessage(message, to) {
-        this.chatroom.sendMessage(message, to, this);
+    reset() {
+        this.index = 0;
     }
 
-    receiveMessage(from) {
-        this.chatroom.showMessages(from, this);
+    get first() {
+        this.reset();
+        return this.items[0];
+    }
+
+    get next() {
+        this.index++;
+        return this.items[this.index];
+    }
+
+    get last() {
+        return this.items[this.items.length - 1];
+    }
+
+    get hasNext() {
+        return this.index < (this.items.length - 1);
+    }
+
+    get isLast(){
+        return this.index === this.items.length;
+    }
+
+    every(fn){
+        const tempArr = [];
+        this.reset();
+         for (this.index; !this.isLast; this.next){
+             tempArr.push(fn(this.items[this.index]))
+         }
+         return tempArr;
     }
 }
 
-class ChatRoom {
-    constructor() {
-        const participants = {};
-        const messageLog = {
-            public: [],
-            direct: []
-        };
-        this.addParticipant = function (participant) {
-            participants[participant.name] = participant;
-            participant.chatroom = this;
-        }
-        this.sendMessage = function (message, to, { name }) {
-            if (!to) {
-                messageLog.public.push({
-                    from: name,
-                    message: message
-                })
-            } else {
-                messageLog.direct.push({
-                    from: name,
-                    to: to.name,
-                    message: message
-                })
-            }
-
-
-        }
-
-        this.showMessages = function (from, participant) {
-            if (!from) {
-                return messageLog.public;
-            } else {
-                return messageLog.direct.filter(messages => messages.from === from.name && messages.to === participant.name);
-            }
-        }
-
-
-    }
 
 
 
+const iterator = new Iterator(someItems)
 
 
-}
-
-// const chatroom = new ChatRoom();
-
-// const ivan = new Participant('Ivan');
-// const kolia = new Participant('Kolia');
-// const serg = new Participant('Serg');
+iterator.every(uppercase);
 
 
-// chatroom.addParticipant(ivan);
-// chatroom.addParticipant(kolia);
-// chatroom.addParticipant(serg);
-
-// ivan.sendMessage('hi All')
-// ivan.sendMessage('hi', kolia)
-// ivan.sendMessage('hi', serg)
-
-// kolia.receiveMessage()
-// kolia.receiveMessage(ivan)

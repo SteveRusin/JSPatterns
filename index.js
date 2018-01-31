@@ -1,28 +1,32 @@
-const mySingleton = (function () {
-    let instance;
-
-    function init() {
-
-        const privateVariable = `I'm private variable`;
-
-        function privateMathod() {
-            console.log('private method')
-        }
-
-        function publicMethod() {
-            console.log('public method');
-        }
-
-        return {
-            publicMethod
-        }
+class Observer {
+    constructor() {
+        this.subscribers = [];
     }
 
-    return {
-        getInstance: function () {
-           return instance = instance ? instance : init();
-        }
+    subscribe(subscriber) {
+        return this.subscribers.push(subscriber);
     }
-})();
 
+    unsubscribe(subscriber) {
+        const index = this.subscribers.findIndex(user => subscriber === user);
+        if (index >= 0) {
+            return this.subscribers.splice(index, 1);
+        }
+        return `subscriber hasn't been found`;
+    }
 
+    transformSubscribers(fn) {
+        return this.subscribers.map(user => fn(user))
+    }
+}
+
+function toUpperCase(item) {
+   return item.toUpperCase()
+}
+
+const observable = new Observer();
+
+observable.subscribe('Ivan');
+observable.subscribe('Petro');
+
+observable.transformSubscribers(toUpperCase);

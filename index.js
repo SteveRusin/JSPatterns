@@ -15,18 +15,30 @@ class Observer {
         return `subscriber hasn't been found`;
     }
 
-    transformSubscribers(fn) {
-        return this.subscribers.map(user => fn(user))
+    notify(data) {
+        this.subscribers.forEach(subscriber => subscriber.receiveData(data));
     }
 }
 
-function toUpperCase(item) {
-   return item.toUpperCase()
+class Subscriber {
+    constructor(name) {
+        this.name = name;
+    }
+
+    receiveData(data) {
+        console.log(data);
+    }
 }
 
 const observable = new Observer();
+const first = new Subscriber('fist');
+const second = new Subscriber('second');
+const third = new Subscriber('third');
 
-observable.subscribe('Ivan');
-observable.subscribe('Petro');
+observable.subscribe(first);
+observable.subscribe(second);
+observable.subscribe(third);
 
-observable.transformSubscribers(toUpperCase);
+observable.notify('hello subscribers');
+
+
